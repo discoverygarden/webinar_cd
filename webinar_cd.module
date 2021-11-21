@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * Contains webinar_cd.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\scss_compiler\ScssCompilerAlterStorage;
+
+/**
+ * Implements hook_help().
+ */
+function webinar_cd_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the webinar_cd module.
+    case 'help.page.webinar_cd':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Sample webinar module, demonstrating the use of context reactions with the color module.&quot;') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_datalayer_alter().
+ */
+function webinar_cd_scss_compiler_variables_alter(ScssCompilerAlterStorage $storage) {
+  $active_theme = \Drupal::service('theme.manager')->getActiveTheme()->getName();
+
+  /** @var \Drupal\context\ContextManager $context_manager */
+  $context_manager = \Drupal::service('context.manager');
+
+  foreach ($context_manager->getActiveReactions('themecoloralterraction') as $reaction) {
+    $config = $reaction->execute();
+
+    // We could leverage color module even more here, by adding a handful
+    // of schemas to the theme color  definition, and pulling it from here,
+    // using the 'color_get_info(THEME_NAME)' function to retrieve a color
+    // scheme id, instead of just a hex color, and use that instead.
+    $storage->set(['$base-color' => $config['color']], $active_theme);
+  }
+}

@@ -1,0 +1,5 @@
+name: 'Webinar CD'
+type: module
+description: 'Sample webinar module, demonstrating the use of context reactions with the color module."'
+core_version_requirement: ^8.8 || ^9
+package: 'Custom'
